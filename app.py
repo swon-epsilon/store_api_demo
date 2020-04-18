@@ -31,7 +31,6 @@ api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
 
 if __name__ == '__main__': # this prevents app.run() from running when app.py is imported from other files.
-	db.init_app(app)
 	app.run(port=5000, debug=True) 
 
 # Common Status Code List
