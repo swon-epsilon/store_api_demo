@@ -20,3 +20,4 @@ def identity(payload):
 	user_id = payload['identity']
 
 	return UserModel.find_by_id(user_id) # userid_mapping.get(user_id, None)
+
