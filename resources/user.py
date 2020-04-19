@@ -34,6 +34,7 @@ class UserRegister(Resource):
 		return {'message': 'User created successfully.'}, 201 # Created
 
 class User(Resource):
+	@jwt_required()
 	@classmethod
 	def get(cls, user_id):
 		user = UserModel.find_by_username(user_id)
@@ -41,6 +42,7 @@ class User(Resource):
 			return {'message': 'User not found'}, 404
 		return user.json()
 
+	@jwt_required()
 	@classmethod
 	def delete(cls, user_id):
 		user = UserModel.find_by_username(user_id)
