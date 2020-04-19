@@ -17,7 +17,10 @@ class ItemModel(db.Model):
 		self.store_id = store_id
 
 	def json(self):
-		return {'name': self.name, 'price': self.price}
+		return {'id': self.id, 
+				'name': self.name, 
+				'price': self.price, 
+				'store_id': self.store_id}
 
 	@classmethod
 	def find_by_name(cls, name):
@@ -34,6 +37,10 @@ class ItemModel(db.Model):
 
 		# if row:
 		# 	return cls(*row) # cls(row[0], row[1]) # {'item': {'name': row[0], 'price': row[1]}}
+
+	@classmethod
+	def find_all(cls):
+		return cls.query.all()
 
 	# @classmethod
 	def save_to_db(self): # insert(cls, item):
