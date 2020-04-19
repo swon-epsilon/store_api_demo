@@ -2,10 +2,10 @@ import os
 
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-from flask_jwt import JWT, jwt_required
+from flask_jwt_extended import JWTManager, # JWT, jwt_required
 
-from security import authenticate, identity
-from resources.user import UserRegister, User, UserList
+# from security import authenticate, identity
+from resources.user import UserRegister, User, UserList, UserLogin
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 
@@ -16,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['JWT_SECRET_KEY'] = '4ckf4fm2&U'
 app.secret_key = '4ckf4fm2'
 api = Api(app)
 
@@ -23,13 +24,14 @@ api = Api(app)
 # def create_tables():
 # 	db.create_all()
 
-jwt = JWT(app, authenticate, identity) # /auth
+jwt = JWTManager(app) # /auth
 
 # items = []
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserList, '/users')
+api.add_resource(UserLogin, '/login')
 
 api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/Sam
 api.add_resource(ItemList, '/items')
