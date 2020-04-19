@@ -33,8 +33,8 @@ class UserRegister(Resource):
 
 		return {'message': 'User created successfully.'}, 201 # Created
 
+
 class User(Resource):
-	
 	@classmethod
 	def get(cls, user_id):
 		user = UserModel.find_by_username(user_id)
@@ -51,6 +51,9 @@ class User(Resource):
 		return {'message': "User with user id: '{}' has been deleted".format(user_id)}, 200
 
 
+class UserList(Resource):
+	def get(self):
+		return {'users': [user.json() for user in UserModel.find_all()]}
 
 
 
