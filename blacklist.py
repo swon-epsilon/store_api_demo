@@ -1,1 +1,1 @@
-black_list = [2, 3]
+black_list = set()

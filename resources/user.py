@@ -1,9 +1,15 @@
 import sqlite3
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity
+from flask_jwt_extended import (jwt_required, 
+								create_access_token, 
+								create_refresh_token, 
+								jwt_refresh_token_required, 
+								get_jwt_identity,
+								get_raw_jwt)
 from werkzeug.security import safe_str_cmp
 
 from models.user import UserModel
+from blacklist import black_list
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('username',
@@ -72,6 +78,13 @@ class UserLogin(Resource):
 			return {'access_token': access_token, 'refresh_token': refresh_token}, 200
 		return {'message': 'Invalid credentials'}, 401
 
+class UserLogout(Resource):
+	@jwt_required
+	def post(self):
+		# jwt ID, a unique identifier for a JWT
+		jti = get_raw_jwt()['jti']
+		black_list.add(jti)
+		return {'message': 'Successfully logged out.'}, 200
 
 class TokenRefresh(Resource):
 	@jwt_refresh_token_required
