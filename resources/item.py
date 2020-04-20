@@ -1,6 +1,6 @@
 import sqlite3
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required, jwt_optional, get_jwt_identity, get_jwt_claims
+from flask_jwt_extended import jwt_required, fresh_jwt_required, jwt_optional, get_jwt_identity, get_jwt_claims
 
 from models.item import ItemModel
 
@@ -27,7 +27,7 @@ class Item(Resource):
 		# item = next(filter(lambda x: x['name'] == name, items), None)
 		# return {'item': item}, 200 if item else 404
 
-	@jwt_required
+	@fresh_jwt_required
 	def post(self, name):
 		if ItemModel.find_by_name(name):
 			return {'message': "An item with name '{}' already exists.".format(name)}, 400
