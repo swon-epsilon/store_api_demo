@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager # JWT, jwt_required
 
@@ -11,11 +11,11 @@ from resources.store import Store, StoreList
 
 from blacklist import black_list
 
-# from db import db
+from db import db
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_BLACKLIST_ENABLED'] = True
@@ -26,9 +26,9 @@ api = Api(app)
 
 # items = []
 
-# @app.before_first_request
-# def create_tables():
-# 	db.create_all()
+@app.before_first_request
+def create_tables():
+	db.create_all()
 
 jwt = JWTManager(app) # /login # /auth
 
@@ -62,14 +62,14 @@ def missing_token_callback(error):
 		}), 401
 
 @jwt.needs_fresh_token_loader
-def token_not_fresh_callback(error):
+def token_not_fresh_callback():
 	return jsonify({
 		'description': 'The token is not fresh.',
 		'error': 'fresh_token_required'
 		}), 401
 
 @jwt.revoked_token_loader
-def revoked_token_callback(error):
+def revoked_token_callback():
 	return jsonify({
 		'description': 'The token has been revoked.',
 		'error': 'token_revoked'
@@ -88,7 +88,7 @@ api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
 
 if __name__ == '__main__': # this prevents app.run() from running when app.py is imported from other files.
-	# db.init_app(app)
+	db.init_app(app)
 	app.run(port=5000, debug=True) 
 
 # Common Status Code List
