@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
-from flask_jwt_extended import JWTManager, # JWT, jwt_required
+from flask_jwt_extended import JWTManager # JWT, jwt_required
 
 # from security import authenticate, identity
 from resources.user import UserRegister, User, UserList, UserLogin
@@ -12,7 +12,7 @@ from resources.store import Store, StoreList
 # from db import db
 
 app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -24,7 +24,13 @@ api = Api(app)
 # def create_tables():
 # 	db.create_all()
 
-jwt = JWTManager(app) # /auth
+jwt = JWTManager(app) # /login # /auth
+
+@jwt.user_claims_loader # link to JWTManager
+def add_claims_to_jwt(identity):
+	if identity == 1:
+		return {'is_admin': True}
+	return {'is_admin': False}
 
 # items = []
 

@@ -3,9 +3,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import create_access_token, create_refresh_token
 from werkzeug.security import safe_str_cmp
 
-
 from models.user import UserModel
-
 
 _user_parser = reqparse.RequestParser()
 _user_parser.add_argument('username',
@@ -63,7 +61,6 @@ class UserList(Resource):
 
 
 class UserLogin(Resource):
-
 	@classmethod
 	def post(cls):
 		data = _user_parser.parse_args()
